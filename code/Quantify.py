@@ -1,34 +1,47 @@
+"""
+Cross-date pair proximity table for VASCO cluster members.
+
+Reads:  data/cluster_members.csv
+Outputs: for each separation threshold (200, 400, 600 arcsec), cross-date pair list
+         with separation in arcsec and km at GEO, delta-t in days, and delta-mag.
+"""
+import os
 import pandas as pd
 import numpy as np
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 from itertools import combinations
 
-cm = pd.read_csv(r"DASCH_Kp_Replication\dasch_northern_reproduction_v2\dasch_northern_reproduction\cluster_requery\cluster_members.csv")
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+CLUSTER_FILE = os.path.join(DATA_DIR, "cluster_members.csv")
+
+cm = pd.read_csv(CLUSTER_FILE)
 
 GEO_KM = 42164
 
-# For pos 271, build a recurrence map
-pos271 = cm[cm['pos_idx'] == 271].copy().reset_index(drop=True)
-coords = SkyCoord(ra=pos271['src_ra_deg'].values*u.deg,
-                  dec=pos271['src_dec_deg'].values*u.deg)
+for pos_id in [271, 319]:
+    subset = cm[cm['pos_idx'] == pos_id].copy().reset_index(drop=True)
+    coords = SkyCoord(ra=subset['src_ra_deg'].values * u.deg,
+                      dec=subset['src_dec_deg'].values * u.deg)
 
-# Bin sources into 600 arcsec spatial cells and count cross-date recurrences
-print("RECURRENCE ANALYSIS - Pos 271")
-print("Sources within 200 arcsec across different dates:\n")
+    print(f"\n{'='*60}")
+    print(f"POS {pos_id} - cross-date pairs by separation threshold")
+    print(f"{'='*60}")
 
-recurrence_groups = []
-used = set()
+    for threshold in [200, 400, 600]:
+        pairs = []
+        for i, j in combinations(range(len(subset)), 2):
+            if subset['obs_date'].iloc[i] == subset['obs_date'].iloc[j]:
+                continue
+            sep = coords[i].separation(coords[j]).arcsec
+            if sep < threshold:
+                dt = abs(pd.Timestamp(subset['obs_date'].iloc[i]) -
+                         pd.Timestamp(subset['obs_date'].iloc[j])).days
+                dmag = abs(subset['plate_mag'].iloc[i] - subset['plate_mag'].iloc[j])
+                pairs.append((sep, dt, dmag,
+                              subset['obs_date'].iloc[i], subset['src_index'].iloc[i],
+                              subset['obs_date'].iloc[j], subset['src_index'].iloc[j]))
 
-for i, j in combinations(range(len(pos271)), 2):
-    if pos271['obs_date'].iloc[i] == pos271['obs_date'].iloc[j]:
-        continue
-    sep = coords[i].separation(coords[j]).arcsec
-    if sep < 200:
-        print(f"  CLOSE PAIR: {pos271['obs_date'].iloc[i]} src{pos271['src_index'].iloc[i]} "
-              f"<-> {pos271['obs_date'].iloc[j]} src{pos271['src_index'].iloc[j]}")
-        print(f"    Sep: {sep:.1f} arcsec = {GEO_KM * np.tan(np.radians(sep/3600)):.1f} km at GEO")
-        print(f"    Mags: {pos271['plate_mag'].iloc[i]:.2f} vs {pos271['plate_mag'].iloc[j]:.2f}")
-        dt = abs(pd.Timestamp(pos271['obs_date'].iloc[i]) - 
-                 pd.Timestamp(pos271['obs_date'].iloc[j])).days
-        print(f"    Time separation: {dt} days ({dt/365.25:.2f} years)\n")
+        print(f"\n  < {threshold} arcsec ({GEO_KM * np.tan(np.radians(threshold/3600)):.0f} km): {len(pairs)} pairs")
+        for sep, dt, dmag, d1, s1, d2, s2 in sorted(pairs):
+            print(f"    {d1} s{s1} <-> {d2} s{s2}: {sep:.0f}\" {sep*GEO_KM/206265:.0f}km dt={dt}d dmag={dmag:.1f}")
