@@ -20,7 +20,7 @@ CLUSTER_FILE = os.path.join(DATA_DIR, "cluster_members.csv")
 cm = pd.read_csv(CLUSTER_FILE)
 
 GEO_KM = 42164
-CLOSE_THRESHOLD = 400  # arcsec — boundary between close and far pairs
+CLOSE_THRESHOLD = 400  # arcsec
 
 for pos_id in [271, 319]:
     subset = cm[cm['pos_idx'] == pos_id].copy().reset_index(drop=True)

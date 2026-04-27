@@ -1,3 +1,10 @@
+"""
+Tests whether close pair counts are driven by source density at extended positions.
+
+Reads:  data/extended_cluster_members.csv
+Outputs: per-position source involvement counts and top sources by pair count
+         at 400 arcsec threshold for pos 11 and 270.
+"""
 import pandas as pd
 import numpy as np
 import os

@@ -1,3 +1,10 @@
+"""
+Source involvement analysis for original cluster positions.
+
+Reads:  data/cluster_members.csv
+Outputs: how many sources at pos 271 and 319 are involved in close cross-date
+         pairs (<400 arcsec) and their individual pair counts.
+"""
 import pandas as pd
 import numpy as np
 import os

@@ -1,3 +1,9 @@
+"""
+Proper motion drift calculation for a Gaia source over 75 years.
+
+Reads:  hardcoded proper motion values (pm_ra=-7.029 mas/yr, pm_dec=3.175 mas/yr)
+Outputs: RA drift, Dec drift, and total drift in arcsec over the plate epoch baseline.
+"""
 pm_ra = -7.029  # mas/yr
 pm_dec = 3.175  # mas/yr
 years = 75

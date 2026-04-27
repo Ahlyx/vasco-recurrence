@@ -1,4 +1,10 @@
-# extended_recurrence.py
+"""
+Cross-date recurrence analysis and Monte Carlo for extended positions.
+
+Reads:  data/extended_cluster_members.csv
+Outputs: pair counts, top pairs, and Monte Carlo p-values at three field radii
+         (0.5, 1.0, 2.0 deg, 100k iterations) for each position in the dataset.
+"""
 import pandas as pd
 import numpy as np
 from itertools import combinations

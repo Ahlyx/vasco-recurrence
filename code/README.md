@@ -19,16 +19,17 @@ random artifact hypothesis. Result is robust across field radii of 0.5, 1.0,
 and 2.0 degrees.
 
 ## Extended Analysis
-Three additional positions (11, 269, 270) were queried via daschlab and 
-subjected to the same recurrence analysis. Positions 11 and 270 showed 
-high raw pair counts but also 100% source involvement rates, indicating 
-the pairs are density-driven rather than reflecting genuine positional 
-recurrence. These positions require further analysis with a tighter 
-separation threshold and APASS density correction before any conclusions 
-can be drawn. Position 269 had insufficient observation dates (n=2) for 
-a meaningful test.
-
-The 5.2σ result rests solely on positions 271 and 319.
+At 400 arcsec threshold, positions 11 and 270 showed 100% source involvement
+rates indicating density-driven pair inflation. At 100 arcsec threshold the
+signal persists strongly (pos 11: 76 pairs, null mean 1.1, p=0.000000 at all
+radii; pos 270: 83 pairs, null mean 1.5, p=0.000000 at all radii), but source
+involvement remains high (82/112 at pos 11, 91/135 at pos 270), indicating the
+bulk statistics are not yet clean. Individual noteworthy pairs exist — pos 270
+s2173/s2200 at 29 arcsec across 1,037 days dmag=1.2 has no known object within
+44 arcsec — but one pair (s9785/s9827, 33 arcsec) has a known BY Draconis
+variable star at 12.93 arcsec offset. These positions are flagged as requiring
+density-corrected analysis and individual SIMBAD verification before any bulk
+claims can be made. The 5.2σ result rests solely on positions 271 and 319.
 
 ## Methodology Notes
 - Monte Carlo null model: circular uniform randomization within field radius,
@@ -61,16 +62,21 @@ The 5.2σ result rests solely on positions 271 and 319.
 3. `geometry_check.py` — cluster_members structure
 4. `scale_check.py` — same-date within-cluster separations
 5. `recurrence_check.py` — cross-date proximity analysis
-6. `Quantify.py` — close pair identification (<200 arcsec)
-7. `Quantify2.py` — pair counts by threshold + Mann-Whitney Δmag test
-8. `monte_carlo_v1.py` — initial Monte Carlo (10k iter, SkyCoord, circular)
-9. `monte_carlo_v2.py` — final Monte Carlo (100k iter, 3 field radii, 
-   pair count + unique source count)
-10. `new_data.py` — identify top candidate positions for extended requery
-11. `sky_coords.py` — RA/Dec lookup for candidate positions
-12. `extended_requery.py` — daschlab requery for new positions
-13. `extended_recurrence.py` — recurrence analysis on extended dataset
-14. `fishers_method.py` — Fisher combined p-value across positions
+6. `quantify.py` — close pair identification by threshold (200/400/600 arcsec)
+7. `quantify2.py` — pair counts by threshold + Mann-Whitney dmag test
+8. `physical_check.py` — source involvement at pos 271 and 319
+9. `monte_carlo_v1.py` — initial Monte Carlo (10k iter, SkyCoord, circular)
+10. `monte_carlo_v2.py` — final Monte Carlo (100k iter, 3 field radii,
+    pair count + unique source count)
+11. `fishers_method_v2.py` — Fisher combined p-value for pos 271 and 319
+12. `new_data.py` — identify top candidate positions for extended requery
+13. `sky_coords.py` — RA/Dec lookup for candidate positions
+14. `extended_requery.py` — daschlab requery for new positions
+15. `extended_recurrence.py` — recurrence analysis and Monte Carlo on extended dataset
+16. `combinatorics_test.py` — source density / involvement check at 400 arcsec
+17. `source_involvement.py` — source involvement at 100 arcsec for pos 11 and 270
+18. `gaia_check.py` — proper motion drift check for a candidate Gaia source
+19. `fishers_method.py` — Fisher combined p-value across all five positions
 
 ## Dependencies
 pip install astropy pandas numpy scipy matplotlib daschlab

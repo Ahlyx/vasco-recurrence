@@ -1,3 +1,10 @@
+"""
+Source involvement analysis at 100 arcsec threshold for extended positions.
+
+Reads:  data/extended_cluster_members.csv
+Outputs: involvement counts and top sources by pair count for pos 11 and 270
+         at a 100 arcsec separation threshold.
+"""
 import pandas as pd
 import numpy as np
 import os
@@ -13,9 +20,9 @@ for pos_id in [11, 270]:
     ra = subset['src_ra_deg'].values
     dec = subset['src_dec_deg'].values
     dates = subset['obs_date'].values
-    
+
     source_pair_counts = Counter()
-    
+
     for i in range(len(ra)):
         for j in range(i+1, len(ra)):
             if dates[i] == dates[j]:
@@ -26,7 +33,7 @@ for pos_id in [11, 270]:
             if sep < THRESHOLD:
                 source_pair_counts[i] += 1
                 source_pair_counts[j] += 1
-    
+
     n_sources = len(subset)
     n_involved = len(source_pair_counts)
     print(f"\nPos {pos_id}: {n_involved}/{n_sources} sources involved in pairs <{THRESHOLD}\"")
