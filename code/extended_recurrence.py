@@ -8,7 +8,7 @@ DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data"
 df = pd.read_csv(os.path.join(DATA_DIR, "extended_cluster_members.csv"))
 
 GEO_KM = 42164
-THRESHOLD = 400  # arcsec
+THRESHOLD = 100  # arcsec
 
 def cross_date_pairs(subset, threshold):
     ra = subset['src_ra_deg'].values
